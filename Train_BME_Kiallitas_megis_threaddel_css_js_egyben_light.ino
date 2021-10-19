@@ -12,14 +12,12 @@ ESP8266HTTPUpdateServer httpUpdater;
 #define update_username "NCOJx3JefsgPn7sP"
 #define update_password "t8oBaXHbuaFzAK5R"
 
-class DNSTask : public Task {
-    void loop() { dnsServer.processNextRequest(); }
-} dnsTask;
-
-class ServerTask : public Task {
-    void loop() { server.handleClient(); }
+class sTask : public Task {
+    void loop() { 
+      server.handleClient();
+      dnsServer.processNextRequest();
+    }
 } serverTask;
-
 
 void stopTrain() {
   train.reset();
@@ -65,10 +63,10 @@ void setup() {
   mon.setReleaseCallBack(&stopTrain);
   train.startProtectEngine();
 
-  Scheduler.start(&serverTask);
+  //Scheduler.start(&serverTask);
   Scheduler.start(&train);
   Scheduler.start(&ap);
-  Scheduler.start(&dnsTask);
+  Scheduler.start(&serverTask);
   Scheduler.start(&mon);
 
   Scheduler.begin();

@@ -1,5 +1,6 @@
 #ifndef AUTOPILOT_H
 #define AUTOPILOT_H
+#define TRAIN_DBG
 #include <ESP8266WiFi.h>
 #include <Scheduler.h>
 #include "train.h"
