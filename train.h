@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #ifndef TRAIN
 #define TRAIN
-#define TRAIN_DBG
+//#define TRAIN_DBG
 #include <Scheduler.h>
 #define MIN_SPEED 130   ///Mozdony minimum sebessége
 #define MAX_SPEED 300   ///Mozdony megengedett maximum sebessége
