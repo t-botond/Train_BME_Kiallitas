@@ -2,6 +2,7 @@
 #define MONITOR_H
 #include <ESP8266WiFi.h>
 #include <Scheduler.h>
+//#define TRAIN_DBG
 
 /**
    Ez az osztály felelős azért, hogy egyszerre csak egyetlen felhsaználó vezérelhesse a mozdonyt.
@@ -52,8 +53,8 @@ class Monitor: public Task {
     }
 
     /**
-     * A vezérlő kliens elveszti a vezérlés jogát.
-     */
+       A vezérlő kliens elveszti a vezérlés jogát.
+    */
     void release() {
       t = 0;
       lastAction = millis();
@@ -61,42 +62,46 @@ class Monitor: public Task {
     }
 
     /**
-     * Lekérdezhető, hogy a monitor éppen foglalt-e.
-     */
+      Egy bizonyos ip elengedése
+    */
+    void release(const IPAddress& ip) {
+      if (clientIP == ip) release();
+    }
+
+    /**
+       Lekérdezhető, hogy a monitor éppen foglalt-e.
+    */
     bool isEmpty() {
       return clientIP == ures;
     }
 
     /**
-     * Az utolsó művelet időpontja (rendszeridőben [millis()])
-     */
+       Az utolsó művelet időpontja (rendszeridőben [millis()])
+    */
     volatile unsigned long lastActionTime()const {
       return lastAction;
     }
 
     /**
-     * Bérleti idő lejárta után elsüti a callBack eseményt.
-     */
+       Bérleti idő lejárta után elsüti a callBack eseményt.
+    */
     void setReleaseCallBack(void (*cb)()) {
       callBack = cb;
     }
 
     /**
-     * Elsüti a callBack függvényt, ha be van állítva, és a leaseTime-on felül nem történt esemény.
-     */
+       Elsüti a callBack függvényt, ha be van állítva, és a leaseTime-on felül nem történt esemény.
+    */
     void loop() {
       if (lastAction + leaseTime < millis() && clientIP != local) {
-        #ifdef TRAIN_DBG 
-          Serial.println("Esemeny elsutve"); 
-        #endif
         if (callBack != NULL) (*callBack)();
       }
       delay(1000);
     }
 
     /**
-     * Az aktuális felhasználó IP-jének lekérdezése.
-     */
+       Az aktuális felhasználó IP-jének lekérdezése.
+    */
     const IPAddress& getUserIP() {
       return clientIP;
     }

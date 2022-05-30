@@ -3,6 +3,7 @@
 #include <Scheduler.h>
 #ifndef WS_HANDLING
 #define WS_HANDLING
+
 #include "server_content.h"
 #include "train.h"
 #include "monitor.h"
@@ -12,7 +13,7 @@
 Train train("mozdony", 12, 14); //D5, D6
 ESP8266WebServer server(80);
 Monitor mon;
-autoPilote ap=autoPilote();
+autoPilote ap;
 
 void logout() {
   IPAddress clientIP = server.client().remoteIP();

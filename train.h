@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #ifndef TRAIN
 #define TRAIN
+//#define TRAIN_DBG
 #include <Scheduler.h>
 #define MIN_SPEED 130   ///Mozdony minimum sebessége
 #define MAX_SPEED 300   ///Mozdony megengedett maximum sebessége
@@ -20,7 +21,7 @@ class protectEngine {
      * Konstruktor
      * @mxTime - Idő küszöb, amin felül tiltani kell a motort
      */
-    protectEngine(unsigned long mxTime = 10000): dir(false), lastSpeed(0), startTime(0), currentTime(0), maxTime(mxTime), en(false) {
+    protectEngine(unsigned long mxTime = 12000): dir(false), lastSpeed(0), startTime(0), currentTime(0), maxTime(mxTime), en(false) {
 
     }
 
@@ -29,6 +30,9 @@ class protectEngine {
      */
     void start() {
       en = true;
+      lastSpeed=0;
+      startTime=0;
+      currentTime=0;
     }
 
     /**
@@ -213,8 +217,11 @@ class Train: public Task  {
         motorVedelem.set(forward, speed);
       else
         motorVedelem.set(forward, 0);
-      motorA = motorVedelem.isOverTime() ? 0 : motorA;
-      motorB = motorVedelem.isOverTime() ? 0 : motorB;
+
+      if(motorVedelem.isOverTime()){
+        motorA=0;
+        motorB=0;
+      }
 
 
       if (engine && speed > MIN_SPEED) {
